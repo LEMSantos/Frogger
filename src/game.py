@@ -11,6 +11,7 @@ class Game:
         pygame.display.set_caption(GAME_TITLE)
 
         self.__display_surface = pygame.display.get_surface()
+        self.__clock = pygame.time.Clock()
 
     def __handle_events(self) -> None:
         for event in pygame.event.get():
@@ -21,6 +22,8 @@ class Game:
     def run(self) -> None:
         while True:
             self.__handle_events()
+
+            dt = self.__clock.tick() / 1000
 
             self.__display_surface.fill("black")
 
