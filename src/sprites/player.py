@@ -2,7 +2,7 @@ import os
 
 from pygame import K_DOWN, K_LEFT, K_RIGHT, K_UP
 from pygame.math import Vector2
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, _Group
 from pygame.surface import Surface
 from pygame.image import load as load_image
 from pygame.key import get_pressed as get_pressed_key
@@ -10,7 +10,7 @@ from pygame.mask import from_surface as mask_from_surface
 
 
 class Player(Sprite):
-    def __init__(self, position: tuple[int, int], *groups):
+    def __init__(self, position: tuple[int, int], *groups: _Group):
         super().__init__(*groups)
 
         self.__animations = self.__import_assets()
