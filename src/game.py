@@ -6,10 +6,13 @@ import pygame
 from src.sprites.car import Car
 from src.core.camera import Camera
 from src.sprites.player import Player
+from src.sprites.object import SimpleObject, LongObject
 from settings import (
     GAME_TITLE,
+    LONG_OBJECTS,
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
+    SIMPLE_OBJECTS,
     CAR_START_POSITIONS,
 )
 
@@ -26,6 +29,9 @@ class Game:
         self.__sprites = self.__init_sprites()
         self.__events = self.__init_events()
 
+        self.__init_objects("simple", SIMPLE_OBJECTS, SimpleObject)
+        self.__init_objects("long", LONG_OBJECTS, LongObject)
+
         self.__car_pos_list = []
 
     def __handle_events(self) -> None:
@@ -41,6 +47,7 @@ class Game:
         return {
             "all_sprites": Camera(),
             "player": pygame.sprite.GroupSingle(),
+            "obstacles": pygame.sprite.Group(),
             "cars": pygame.sprite.Group(),
         }
 
@@ -53,10 +60,29 @@ class Game:
             "car_respawn": car_respawn,
         }
 
+    def __init_objects(
+        self,
+        obj_type: str,
+        objects_dict: dict[str, list[tuple[float, float]]],
+        obj_class: pygame.sprite.Sprite,
+    ) -> None:
+        for object_name, positions in objects_dict.items():
+            surface = pygame.image.load(
+                f"graphics/objects/{obj_type}/{object_name}.png"
+            ).convert_alpha()
+
+            for position in positions:
+                obj_class(
+                    surface,
+                    position,
+                    self.__groups["all_sprites"],
+                    self.__groups["obstacles"],
+                )
+
     def __init_sprites(self) -> dict[str, pygame.sprite.Sprite]:
         return {
             "player": Player(
-                (600, 400),
+                (2062, 3274),
                 self.__groups["all_sprites"],
                 self.__groups["player"],
             ),
