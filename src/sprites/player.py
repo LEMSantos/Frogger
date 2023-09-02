@@ -26,6 +26,7 @@ class Player(Sprite):
 
         self.image = self.__animations[self.__status][self.__animation_index]
         self.rect = self.image.get_rect(center=position)
+        self.hitbox = self.rect.inflate(0, -self.rect.height / 2)
         self.mask = mask_from_surface(self.image)
 
         self.__direction = Vector2(0, 0)
@@ -68,10 +69,12 @@ class Player(Sprite):
 
         self.__pos.x += self.__direction.x * self.__speed * dt
         self.rect.centerx = round(self.__pos.x)
+        self.hitbox.centerx = self.rect.centerx
         self.__handle_collision("horizontal")
 
         self.__pos.y += self.__direction.y * self.__speed * dt
         self.rect.centery = round(self.__pos.y)
+        self.hitbox.centery = self.rect.centery
         self.__handle_collision("vertical")
 
         self.mask = mask_from_surface(self.image)
@@ -89,22 +92,24 @@ class Player(Sprite):
 
     def __handle_collision(self, direction: str):
         for sprite in self.__obstacles.sprites():
-            if sprite.rect.colliderect(self.rect):
+            if sprite.hitbox.colliderect(self.hitbox):
                 if isinstance(sprite, Car):
                     quit_game()
                     sys.exit()
 
                 if direction == "horizontal":
                     if self.__direction.x > 0:
-                        self.rect.right = sprite.rect.left
+                        self.hitbox.right = sprite.hitbox.left
                     else:
-                        self.rect.left = sprite.rect.right
+                        self.hitbox.left = sprite.hitbox.right
                 else:
                     if self.__direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+                        self.hitbox.top = sprite.hitbox.bottom
                     else:
-                        self.rect.bottom = sprite.rect.top
-                self.__pos = Vector2(self.rect.center)
+                        self.hitbox.bottom = sprite.hitbox.top
+
+                self.__pos = Vector2(self.hitbox.center)
+                self.rect.center = self.hitbox.center
 
     def update(self, dt: int) -> None:
         self.__keyboard_input()

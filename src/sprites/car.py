@@ -25,6 +25,7 @@ class Car(Sprite):
             self.image = flip_surface(self.image, True, False)
 
         self.rect = self.image.get_rect(center=position)
+        self.hitbox = self.rect.inflate(0, -self.rect.height / 2)
         self.mask = mask_from_surface(self.image)
 
         self.__pos = Vector2(self.rect.center)
@@ -41,6 +42,7 @@ class Car(Sprite):
     def __move(self, dt: int) -> None:
         self.__pos += self.__direction * self.__speed * dt
         self.rect.center = (round(self.__pos.x), round(self.__pos.y))
+        self.hitbox.center = self.rect.center
 
     def update(self, dt: int) -> None:
         self.__move(dt)
