@@ -28,6 +28,12 @@ class Game:
         self.__display_surface = pygame.display.get_surface()
         self.__clock = pygame.time.Clock()
 
+        self.__font = pygame.font.Font(None, 50)
+        self.__win_text_surface = self.__font.render("Você venceu!!", True, "white")
+        self.__win_text_rect = self.__win_text_surface.get_rect(
+            center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+        )
+
         self.__groups = self.__init_groups()
         self.__sprites = self.__init_sprites()
         self.__events = self.__init_events()
@@ -119,10 +125,16 @@ class Game:
 
             self.__display_surface.fill("black")
 
-            self.__groups["all_sprites"].update(dt=dt)
-            self.__groups["all_sprites"].customize_draw(
-                surface=self.__display_surface,
-                player=self.__sprites["player"],
-            )
+            if self.__sprites["player"].rect.centery > 1180:
+                self.__groups["all_sprites"].update(dt=dt)
+                self.__groups["all_sprites"].customize_draw(
+                    surface=self.__display_surface,
+                    player=self.__sprites["player"],
+                )
+            else:
+                self.__display_surface.fill("teal")
+                self.__display_surface.blit(
+                    self.__win_text_surface, self.__win_text_rect
+                )
 
             pygame.display.update()
