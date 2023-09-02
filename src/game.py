@@ -83,8 +83,11 @@ class Game:
         return {
             "player": Player(
                 (2062, 3274),
-                self.__groups["all_sprites"],
-                self.__groups["player"],
+                self.__groups["obstacles"],
+                [
+                    self.__groups["all_sprites"],
+                    self.__groups["player"],
+                ],
             ),
         }
 
@@ -95,7 +98,11 @@ class Game:
             self.__car_pos_list.append(random_pos)
             Car(
                 (random_pos[0], random_pos[1] + random.randint(-8, 8)),
-                [self.__groups["cars"], self.__groups["all_sprites"]],
+                [
+                    self.__groups["cars"],
+                    self.__groups["obstacles"],
+                    self.__groups["all_sprites"],
+                ],
             )
 
         if len(self.__car_pos_list) > 5:

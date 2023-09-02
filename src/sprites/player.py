@@ -2,7 +2,7 @@ import os
 
 from pygame import K_DOWN, K_LEFT, K_RIGHT, K_UP
 from pygame.math import Vector2
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, Group
 from pygame.surface import Surface
 from pygame.image import load as load_image
 from pygame.key import get_pressed as get_pressed_key
@@ -10,8 +10,10 @@ from pygame.mask import from_surface as mask_from_surface
 
 
 class Player(Sprite):
-    def __init__(self, position: tuple[int, int], *groups):
+    def __init__(self, position: tuple[int, int], obstacles: Group, *groups):
         super().__init__(*groups)
+
+        self.__obstacles = obstacles
 
         self.__animations = self.__import_assets()
         self.__animation_speed = 10
@@ -60,9 +62,14 @@ class Player(Sprite):
         if self.__direction.magnitude() > 0:
             self.__direction = self.__direction.normalize()
 
-        self.__pos += self.__direction * self.__speed * dt
+        self.__pos.x += self.__direction.x * self.__speed * dt
+        self.rect.centerx = round(self.__pos.x)
+        self.__handle_collision("horizontal")
 
-        self.rect.center = (round(self.__pos.x), round(self.__pos.y))
+        self.__pos.y += self.__direction.y * self.__speed * dt
+        self.rect.centery = round(self.__pos.y)
+        self.__handle_collision("vertical")
+
         self.mask = mask_from_surface(self.image)
 
     def __animate(self, dt: int) -> None:
@@ -75,6 +82,21 @@ class Player(Sprite):
 
         self.image = _animations[int(self.__animation_index % len(_animations))]
         self.mask = mask_from_surface(self.image)
+
+    def __handle_collision(self, direction: str):
+        for sprite in self.__obstacles.sprites():
+            if sprite.rect.colliderect(self.rect):
+                if direction == "horizontal":
+                    if self.__direction.x > 0:
+                        self.rect.right = sprite.rect.left
+                    else:
+                        self.rect.left = sprite.rect.right
+                else:
+                    if self.__direction.y < 0:
+                        self.rect.top = sprite.rect.bottom
+                    else:
+                        self.rect.bottom = sprite.rect.top
+                self.__pos = Vector2(self.rect.center)
 
     def update(self, dt: int) -> None:
         self.__keyboard_input()
