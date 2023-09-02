@@ -1,5 +1,7 @@
 import os
+import sys
 
+from pygame import quit as quit_game
 from pygame import K_DOWN, K_LEFT, K_RIGHT, K_UP
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
@@ -7,6 +9,8 @@ from pygame.surface import Surface
 from pygame.image import load as load_image
 from pygame.key import get_pressed as get_pressed_key
 from pygame.mask import from_surface as mask_from_surface
+
+from src.sprites.car import Car
 
 
 class Player(Sprite):
@@ -86,6 +90,10 @@ class Player(Sprite):
     def __handle_collision(self, direction: str):
         for sprite in self.__obstacles.sprites():
             if sprite.rect.colliderect(self.rect):
+                if isinstance(sprite, Car):
+                    quit_game()
+                    sys.exit()
+
                 if direction == "horizontal":
                     if self.__direction.x > 0:
                         self.rect.right = sprite.rect.left
