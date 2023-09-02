@@ -90,7 +90,7 @@ class Player(Sprite):
         self.image = _animations[int(self.__animation_index % len(_animations))]
         self.mask = mask_from_surface(self.image)
 
-    def __handle_collision(self, direction: str):
+    def __handle_collision(self, direction: str) -> None:
         for sprite in self.__obstacles.sprites():
             if sprite.hitbox.colliderect(self.hitbox):
                 if isinstance(sprite, Car):
@@ -111,7 +111,24 @@ class Player(Sprite):
                 self.__pos = Vector2(self.hitbox.center)
                 self.rect.center = self.hitbox.center
 
+    def __restrict_movement(self) -> None:
+        if self.rect.left < 640:
+            self.__pos.x = 640 + self.rect.width / 2
+            self.hitbox.left = 640
+            self.rect.left = 640
+
+        if self.rect.right > 2560:
+            self.__pos.x = 2560 - self.rect.width / 2
+            self.hitbox.right = 2560
+            self.rect.right = 2560
+
+        if self.rect.bottom > 3500:
+            self.__pos.y = 3500 - self.rect.height / 2
+            self.rect.bottom = 3500
+            self.hitbox.centery = self.rect.centery
+
     def update(self, dt: int) -> None:
         self.__keyboard_input()
         self.__move(dt)
         self.__animate(dt)
+        self.__restrict_movement()
