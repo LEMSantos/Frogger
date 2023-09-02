@@ -2,8 +2,9 @@ import sys
 
 import pygame
 
-from settings import GAME_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT
+from src.core.camera import Camera
 from src.sprites.player import Player
+from settings import GAME_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT
 
 
 class Game:
@@ -25,8 +26,7 @@ class Game:
 
     def __init_groups(self) -> dict[str, pygame.sprite.Group]:
         return {
-            "all_sprites": pygame.sprite.Group(),
-            "visible_sprites": pygame.sprite.Group(),
+            "all_sprites": Camera(),
             "player": pygame.sprite.GroupSingle(),
             "cars": pygame.sprite.Group(),
         }
@@ -36,7 +36,6 @@ class Game:
             "player": Player(
                 (600, 400),
                 self.__groups["all_sprites"],
-                self.__groups["visible_sprites"],
                 self.__groups["player"],
             ),
         }
@@ -50,6 +49,9 @@ class Game:
             self.__display_surface.fill("black")
 
             self.__groups["all_sprites"].update(dt=dt)
-            self.__groups["visible_sprites"].draw(self.__display_surface)
+            self.__groups["all_sprites"].customize_draw(
+                surface=self.__display_surface,
+                player=self.__sprites["player"],
+            )
 
             pygame.display.update()
