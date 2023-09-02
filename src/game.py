@@ -43,6 +43,10 @@ class Game:
 
         self.__car_pos_list = []
 
+        background_music = pygame.mixer.Sound("audio/music.mp3")
+        background_music.set_volume(0.1)
+        background_music.play(-1)
+
     def __handle_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
