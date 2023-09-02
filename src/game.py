@@ -26,20 +26,20 @@ class Game:
     def __init_groups(self) -> dict[str, pygame.sprite.Group]:
         return {
             "all_sprites": pygame.sprite.Group(),
+            "visible_sprites": pygame.sprite.Group(),
+            "player": pygame.sprite.GroupSingle(),
+            "cars": pygame.sprite.Group(),
         }
 
     def __init_sprites(self) -> dict[str, pygame.sprite.Sprite]:
         return {
-            "player": Player((600, 400), self.__groups["all_sprites"]),
+            "player": Player(
+                (600, 400),
+                self.__groups["all_sprites"],
+                self.__groups["visible_sprites"],
+                self.__groups["player"],
+            ),
         }
-
-    def __update_groups(self, dt) -> None:
-        for group in self.__groups.values():
-            group.update(dt=dt)
-
-    def __draw_groups(self, surface: pygame.Surface) -> None:
-        for group in self.__groups.values():
-            group.draw(surface)
 
     def run(self) -> None:
         while True:
@@ -49,7 +49,7 @@ class Game:
 
             self.__display_surface.fill("black")
 
-            self.__update_groups(dt)
-            self.__draw_groups(self.__display_surface)
+            self.__groups["all_sprites"].update(dt=dt)
+            self.__groups["visible_sprites"].draw(self.__display_surface)
 
             pygame.display.update()
