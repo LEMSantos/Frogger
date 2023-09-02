@@ -3,6 +3,8 @@ GAME_TITLE: str = "Frogger"
 WINDOW_WIDTH: int = 1280
 WINDOW_HEIGHT: int = 720
 
+CAR_RESPAWN_TIME = 50
+
 CAR_START_POSITIONS: list[tuple[int, int]] = [
     (-100, 1312),
     (-100, 1632),

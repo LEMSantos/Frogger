@@ -13,6 +13,7 @@ from settings import (
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
     SIMPLE_OBJECTS,
+    CAR_RESPAWN_TIME,
     CAR_START_POSITIONS,
 )
 
@@ -54,7 +55,7 @@ class Game:
     def __init_events(self) -> dict[str, int]:
         car_respawn = pygame.event.custom_type()
 
-        pygame.time.set_timer(car_respawn, 50)
+        pygame.time.set_timer(car_respawn, CAR_RESPAWN_TIME)
 
         return {
             "car_respawn": car_respawn,
